@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adavance_Task_Manager</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/babel">
+
+function TastManager(){
+    const [addTask , setAddTask] = React.useState("")
+    const [data , setData]= React.useState([])
+
+    function GetData (){
+     
+        axios.get("http://localhost:5000/todos")
+        .then((res)=>setData(res.data))
+        .catch((err)=>console.log(err))
+    }
+    GetData()
+    function HandleAddTask(){
+        let task = {title:addTask,status:false}
+        console.log(task);
+
+        axios.post("http://localhost:5000/todos",task)
+        .then(()=>console.log("task updated"))
+        .catch(()=>console.log("task failed to update"))
+    }
+    function HandleDelete(el,i){
+        axios
+        .delete(`http://localhost:5000/todos/${el.id}`)
+        .then(()=>console.log("task deleted"))
+        .catch(()=>console.log("task failed to delete"))
+        
+    }
+    function HandelChange(el,i){
+        console.log({...el , status:true})
+        axios.patch(`http://localhost:5000/todos/${el.id}`,
+        {...el,status:!el.status})
+    }
+    function HandleFilter(e){
+
+        const status = (e.target.value);
+    }        axios
+        .get(`http://localhost:5000/todos/${status}`)
+        .then((res)=>setData(res.data))
+        .catch((err)=>console.log(err))
+        
+    return(
+        <div>
+
+            <select onChange={(e)=>HandleFilter(e)}>
+                <option value="true">completed</option>
+                <option value="false">pending</option>
+                </select>
+
+         <div>
+            <input type="text" placeholder="Add Your Tasks"
+            onChange={((e)=>setAddTask(e.target.value))}
+            value={addTask}/>
+            <button onClick={HandleAddTask}>ADD TASK</button>
+        </div>
+      <ul>
+        {data.map((el,i)=> <li key={i}>{el.title}
+        <span onClick={()=>HandelChange(el,i)}> -status {el.status?"-completed":"-pending"} </span>
+        <button onClick={()=>HandleDelete(el,i)} >Delete</button>
+        </li>)}</ul> 
+       
+
+        </div>
+    )
+}
+    ReactDOM.createRoot(document.getElementById("root")).render(<TastManager/>)
+  </script>
+</html>

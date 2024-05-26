@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": "90f4",
+      "title": "chai",
+      "status": false
+    },
+    {
+      "id": "1ffd",
+      "title": "poha",
+      "status": false
+    },
+    {
+      "id": "36f9",
+      "title": "sunrise",
+      "status": true
+    }
+  ]
+}
